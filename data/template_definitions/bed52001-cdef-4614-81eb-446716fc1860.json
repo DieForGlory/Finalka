@@ -1,0 +1,13 @@
+{
+    "template_name": "Проверка отображения файлов",
+    "excel_file": "bed52001-cdef-4614-81eb-446716fc1860.xlsx",
+    "original_filename": "OOH_Предложение_байнга_с_привязками (3).xlsx",
+    "header_start_cell": "B11",
+    "rules": [
+        {
+            "source_cell": "A11",
+            "template_col": "C"
+        }
+    ],
+    "name": "Проверка отображения файлов"
+}

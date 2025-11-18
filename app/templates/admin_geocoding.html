@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Управление геокодингом{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Управление базой геокодинга</h1>
+    <p>
+        Здесь вы можете обновить файл <code>data/geocoding/addresses.csv</code>,
+        который используется для функции "Найти координаты по адресу".
+    </p>
+    <p>
+        <strong>Внимание:</strong> Файл должен быть в формате CSV, UTF-8, с тремя колонками:
+        <code>Адрес</code>, <code>Широта</code>, <code>Долгота</code>.
+        Загрузка нового файла полностью заменит старый.
+    </p>
+
+    <div class="item-card" style="margin-top: 2rem;">
+        <form action="{{ url_for('admin.geocoding_ui') }}" method="POST" enctype="multipart/form-data" style="width:100%">
+            <h3>Загрузить новый файл <code>addresses.csv</code></h3>
+            <div class="form-group">
+                <label for="address_file">Выберите CSV-файл</label>
+                <input type="file" id="address_file" name="address_file" accept=".csv" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Загрузить и обновить</button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

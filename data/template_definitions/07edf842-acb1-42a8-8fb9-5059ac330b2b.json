@@ -1,0 +1,12 @@
+{
+    "template_name": "OOH",
+    "excel_file": "07edf842-acb1-42a8-8fb9-5059ac330b2b.xlsx",
+    "original_filename": "OOH_Шаблон.xlsx",
+    "header_start_cell": "B11",
+    "rules": [
+        {
+            "source_cell": "B6",
+            "template_col": "C"
+        }
+    ]
+}

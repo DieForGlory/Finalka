@@ -1,0 +1,30 @@
+{
+    "template_name": "Тест",
+    "excel_file": "e47af7a3-89d5-433b-9ce7-a981a320b92a.xlsm",
+    "header_start_cell": "B15",
+    "rules": [
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "A11",
+            "template_col": "B"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "E11",
+            "template_col": "F"
+        }
+    ],
+    "post_function": "none",
+    "visible_rows_only": true,
+    "original_filename": "PPL_шаблон_Г_1.9.xlsm",
+    "cell_mappings": [],
+    "formula_rules": [],
+    "static_value_rules": [],
+    "sheet_settings": [
+        {
+            "sheet_name": "APR-Market",
+            "start_cell": "A11"
+        }
+    ],
+    "source_cell_fill_rules": []
+}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Управление пользователями{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Управление пользователями</h1>
+
+    <h2 style="margin-top: 2rem;">Добавить нового пользователя</h2>
+    <form action="{{ url_for('admin.add_user') }}" method="POST" class="item-card" style="margin-bottom: 2rem;">
+        <div class="item-card-content">
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="username">Имя пользователя:</label>
+                <input type="text" id="username" name="username" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="role">Роль:</label>
+                <select id="role" name="role" class="form-control">
+                    <option value="user" selected>User</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+        </div>
+        <div class="item-card-actions">
+            <button type="submit" class="btn btn-primary">Добавить</button>
+        </div>
+    </form>
+    <h2 style="margin-top: 2rem;">Существующие пользователи</h2>
+    <div class="item-list">
+    {% for user in users %}
+        <div class="item-card">
+            <div class="item-card-content">
+                <h3>{{ user.username }}</h3>
+
+                <p style="color: #6c757d; line-height: 1.6;">
+                    ID: {{ user.id }} | Роль: {{ user.role }} <br>
+                    {% if user.last_login %}
+                        Последний вход: {{ user.last_login.strftime('%Y-%m-%d %H:%M') }}
+                    {% else %}
+                        Последний вход: (не заходил)
+                    {% endif %}
+                </p>
+                </div>
+            <div class="item-card-actions">
+                {% if user.id != current_user.id %}
+                <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="POST" onsubmit="return confirm('Удалить этого пользователя?');">
+                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                </form>
+                {% else %}
+                <span class="btn btn-secondary btn-sm" style="opacity: 0.5; cursor: not-allowed;">Это вы</span>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Создание нового шаблона{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Создание нового шаблона</h1>
+    <p>Настройте шаблон один раз, чтобы затем применять его для обработки файлов в один клик.</p>
+
+    <form action="{{ url_for('templates.create') }}" method="POST" enctype="multipart/form-data" style="margin-top: 2rem;">
+
+        <fieldset>
+            <legend><span class="legend-icon">1</span>Основная информация и настройки</legend>
+
+            <div class="form-group">
+                <label for="template_name">Название шаблона</label>
+                <input type="text" id="template_name" name="template_name" placeholder="Например, 'Ежемесячный отчет'" required>
+            </div>
+
+            <div class="form-group">
+                <label for="header_start_cell">Ячейка с первым заголовком (в файле-шаблоне)</label>
+                <input type="text" id="header_start_cell" name="header_start_cell" placeholder="Например, A1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="excel_file">Загрузить файл-шаблон (.xls, .xlsx, .xlsm)</label>
+                <input type="file" id="excel_file" name="excel_file" accept=".xls, .xlsx, .xlsm" required>
+            </div>
+
+            <hr style="margin: 2rem 0;">
+
+            <div class="form-group">
+                <label for="post_function">Финальная обработка</label>
+                <select id="post_function" name="post_function">
+                    <option value="none" selected>Без обработки</option>
+                    <option value="geocode">Найти координаты по адресу</option>
+                    </select>
+            </div>
+
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="visible_rows_only" name="visible_rows_only" value="true">
+                <label for="visible_rows_only">Обрабатывать только видимые (не скрытые фильтром) строки</label>
+            </div>
+
+            {% if current_user.role == 'admin' %}
+            <hr style="margin: 2rem 0;">
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="is_public" name="is_public" value="on">
+                <label for="is_public">(Только для Админа) Сделать этот шаблон ПУБЛИЧНЫМ (доступным для всех)</label>
+            </div>
+            {% endif %}
+        </fieldset>
+
+        <fieldset>
+            <legend><span class="legend-icon">2</span>Настройки листов источника</legend>
+            <p>Для каждого листа, который вы используете в правилах ниже, укажите, где на нем начинаются заголовки.</p>
+            <div id="sheet-settings-container">
+                </div>
+            <button type="button" id="add-sheet-setting" class="btn btn-secondary" style="margin-top: 1rem;">+ Добавить настройку для листа</button>
+        </fieldset>
+
+        <fieldset>
+            <legend><span class="legend-icon">3</span>Сопоставление ячеек (Ячейка → Ячейка)</legend>
+            <p>Точечное копирование данных из одной ячейки в другую. (н-р, `A1` -> `B5`)</p>
+            <div id="cell-mappings-container">
+                 </div>
+            <button type="button" id="add-cell-mapping" class="btn btn-secondary" style="margin-top: 1rem;">+ Добавить сопоставление ячейки</button>
+        </fieldset>
+
+        <fieldset>
+            <legend><span class="legend-icon">4</span>Заполнение столбца из ячейки (Ячейка → Столбец)</legend>
+            <p>Взять значение из ОДНОЙ ячейки (н-р, A2) и вставить его во ВЕСЬ столбец C.</p>
+            <div id="source-cell-fill-rules-container">
+                </div>
+            <button type="button" id="add-source-fill-rule" class="btn btn-secondary" style="margin-top: 1rem;">+ Добавить правило заполнения</button>
+        </fieldset>
+
+        <fieldset>
+            <legend><span class="legend-icon">5</span>Сопоставление столбцов (Колонка → Колонка)</legend>
+            <p>Основное правило для копирования данных по строкам из одного столбца в другой. (н-р, `A` -> `B`)</p>
+            <div id="manual-rules-container">
+                 </div>
+            <button type="button" id="add-manual-rule" class="btn btn-secondary" style="margin-top: 1rem;">+ Добавить правило</button>
+        </fieldset>
+
+        <fieldset>
+            <legend><span class="legend-icon">6</span>Продвинутые настройки столбцов</legend>
+
+            <p style="margin-top: 1rem; margin-bottom: 1rem;">Здесь можно заполнить колонку одним и тем же значением для всех строк.</p>
+            <div id="static-value-rules-container">
+                 </div>
+            <button type="button" id="add-static-value-rule" class="btn btn-secondary" style="margin-top: 1rem;">+ Добавить статичное значение</button>
+
+            <hr style="margin: 2rem 0;">
+
+            <p style="margin-bottom: 1rem;">Здесь можно задать формулы для колонок. Используйте <strong>{row}</strong> для подстановки номера текущей строки. Пример: <code>=A{row}*1.2</code></p>
+            <div id="formula-rules-container">
+                 </div>
+            <button type="button" id="add-formula-rule" class="btn btn-secondary" style="margin-top: 1rem;">+ Добавить правило формулы</button>
+        </fieldset>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.2rem; margin-top: 2rem;">Создать шаблон</button>
+    </form>
+</div>
+{% endblock %}

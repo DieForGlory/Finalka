@@ -1,0 +1,33 @@
+{
+    "template_name": "OOH_pchelkina_личный_01 (russ)",
+    "excel_file": "9fc16404-c703-4353-b58c-8c4e55f6baf5.xlsx",
+    "original_filename": "!ШAБЛОН_OOH_2025_pchelkina.xlsx",
+    "header_start_cell": "B16",
+    "rules": [
+        {
+            "source_cell": "B22",
+            "template_col": "C"
+        },
+        {
+            "source_cell": "C22",
+            "template_col": "H"
+        },
+        {
+            "source_cell": "D22",
+            "template_col": "D"
+        },
+        {
+            "source_cell": "E22",
+            "template_col": "J"
+        },
+        {
+            "source_cell": "F22",
+            "template_col": "S"
+        },
+        {
+            "source_cell": "G22",
+            "template_col": "G"
+        }
+    ],
+    "name": "OOH_pchelkina_личный_01 (russ)"
+}

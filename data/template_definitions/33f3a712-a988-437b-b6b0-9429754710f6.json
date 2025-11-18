@@ -1,0 +1,27 @@
+{
+    "template_name": "Indoor",
+    "excel_file": "33f3a712-a988-437b-b6b0-9429754710f6.xlsm",
+    "original_filename": "PPL_шаблон_Г_1.9.xlsm",
+    "header_start_cell": "A15",
+    "rules": [],
+    "post_function": "none",
+    "visible_rows_only": false,
+    "cell_mappings": [],
+    "formula_rules": [],
+    "static_value_rules": [],
+    "sheet_settings": [
+        {
+            "sheet_name": "APR-Market",
+            "start_cell": "A11"
+        },
+        {
+            "sheet_name": "APR-Market1",
+            "start_cell": "A21"
+        },
+        {
+            "sheet_name": "йцуйцу",
+            "start_cell": "A21"
+        }
+    ],
+    "source_cell_fill_rules": []
+}

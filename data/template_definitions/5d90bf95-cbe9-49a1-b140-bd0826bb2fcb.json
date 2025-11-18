@@ -1,0 +1,45 @@
+{
+    "template_name": "ФН_Logic_АВ_стандарт",
+    "excel_file": "5d90bf95-cbe9-49a1-b140-bd0826bb2fcb.xlsx",
+    "original_filename": "PPL_шаблон_Г_1.9.xlsx",
+    "header_start_cell": "A15",
+    "rules": [
+        {
+            "source_sheet": "Азбука вкуса",
+            "source_cell": "D7",
+            "template_col": "AG"
+        },
+        {
+            "source_sheet": "Азбука вкуса",
+            "source_cell": "D5",
+            "template_col": "AW"
+        },
+        {
+            "source_sheet": "Азбука вкуса",
+            "source_cell": "D6",
+            "template_col": "AX"
+        }
+    ],
+    "cell_mappings": [],
+    "formula_rules": [
+        {
+            "source_sheet": "Азбука вкуса",
+            "target_sheet": "МП",
+            "target_col": "AH",
+            "formula": "=K4{row}*3600/K6{row}"
+        }
+    ],
+    "static_value_rules": [],
+    "post_function": "none",
+    "visible_rows_only": true,
+    "sheet_settings": [
+        {
+            "sheet_name": "Адресная программа",
+            "start_cell": "A19"
+        },
+        {
+            "sheet_name": "Азбука вкуса",
+            "start_cell": "B21"
+        }
+    ]
+}

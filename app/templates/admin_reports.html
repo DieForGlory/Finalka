@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Отчет по активности{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1>Отчет по активности пользователей</h1>
+    </div>
+
+    <p>Здесь показана сводная статистика по всем пользователям системы.</p>
+
+    <div class="item-list" style="margin-top: 2rem;">
+        {% for user_id, data in report_data.items() %}
+        <div class="item-card" style="align-items: flex-start; flex-direction: column;">
+
+            <h2 style="color: var(--primary-color);">{{ data.username }}</h2>
+
+            <fieldset style="width: 100%; margin-top: 1rem;">
+                <legend style="font-size: 1.1rem; color: #333;">Сводка</legend>
+                <ul style="list-style-type: none; padding-left: 1rem;">
+                    <li><strong>Всего запусков парсинга:</strong> {{ data.tasks_run }}</li>
+                    <li><strong>Успешных запусков:</strong> <span style="color: var(--success-color); font-weight: 600;">{{ data.tasks_success }}</span></li>
+                    <li><strong>Ошибок при парсинге:</strong> <span style="color: var(--error-color); font-weight: 600;">{{ data.tasks_error }}</span></li>
+                </ul>
+            </fieldset>
+
+            <fieldset style="width: 100%; margin-top: 1.5rem;">
+                <legend style="font-size: 1.1rem; color: #333;">Последние {{ data.task_log|length }} запусков</legend>
+                {% if data.task_log %}
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                        <thead style="text-align: left; border-bottom: 2px solid var(--border-color);">
+                            <tr>
+                                <th style="padding: 8px;">Время</th>
+                                <th style="padding: 8px;">Шаблон</th>
+                                <th style="padding: 8px;">Результат</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in data.task_log|slice(10) %}
+                                <tr style="border-bottom: 1px solid var(--border-color);">
+
+                                    <td style="padding: 8px; font-size: 0.9rem; color: #6c757d;">
+                                        {% if task.timestamp %}
+                                            {{ task.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                                        {% else %}
+                                            (нет данных)
+                                        {% endif %}
+                                    </td>
+
+                                    <td style="padding: 8px;">
+                                        {{ task.template_name or '(нет данных)' }}
+                                    </td>
+
+                                    {% if 'Ошибка' in task.status %}
+                                        <td style="padding: 8px; color: var(--error-color);">Ошибка</td>
+                                    {% else %}
+                                        <td style="padding: 8px; color: var(--success-color);">Успех</td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                    </table>
+                {% else %}
+                     <p style="padding-left: 1rem;"><em>Запусков не было.</em></p>
+                {% endif %}
+            </fieldset>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

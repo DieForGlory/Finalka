@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Словарь Значений{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Словарь Значений</h1>
+    <p>Здесь вы можете настроить автозамену. Например, если в исходном файле написано "СПБ", система автоматически заменит это на "Санкт-Петербург" в итоговом файле.</p>
+
+    <div class="item-card" style="margin-top: 2rem;">
+        <form id="value-dictionary-form" action="{{ url_for('dictionaries.add_to_value_dictionary') }}" method="POST" style="width:100%">
+            <h3>Добавить или обновить правило замены</h3>
+            <div class="form-group">
+                <label for="canonical_word">На что заменять (правильное значение)</label>
+                <input type="text" id="canonical_word" name="canonical_word" placeholder="Например, 'Санкт-Петербург'" required>
+            </div>
+            <div class="form-group">
+                <label for="find_words">Что искать для замены (через разделитель @1!)</label>
+                <input type="text" id="find_words" name="find_words" placeholder="Например, СПБ@1!Питер@1!С-Пб">
+            </div>
+            <button type="submit" class="btn btn-primary">Сохранить правило</button>
+        </form>
+    </div>
+
+    <h2 style="margin-top: 2rem;">Существующие правила</h2>
+    {% if rules %}
+        <div class="item-list">
+        {% for canonical, find_words in rules.items() %}
+            <div class="item-card">
+                <div class="item-card-content">
+                    <h3>Заменять на: "{{ canonical }}"</h3>
+                    <p style="color: #6c757d;">Если найдено: {{ find_words|join('@1!') }}</p>
+                </div>
+                <div class="item-card-actions">
+                    <button type="button" class="btn btn-secondary btn-sm edit-btn" data-canonical="{{ canonical }}" data-synonyms="{{ find_words|join('@1!') }}">Редактировать</button>
+                    <form action="{{ url_for('dictionaries.delete_from_value_dictionary') }}" method="POST" onsubmit="return confirm('Удалить это правило?');" style="display: inline;">
+                        <input type="hidden" name="canonical_word" value="{{ canonical }}">
+                        <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p>У вас пока нет правил автозамены. Создайте первое!</p>
+    {% endif %}
+</div>
+{% endblock %}

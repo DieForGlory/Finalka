@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Ваши Шаблоны{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1>Библиотека ваших шаблонов</h1>
+        <a href="{{ url_for('templates.new') }}" class="btn btn-primary">Создать новый шаблон</a>
+    </div>
+
+    <p>Здесь хранятся все ваши заготовки. Вы можете отредактировать существующий шаблон или создать совершенно новый.</p>
+
+    {% if templates %}
+    <div class="item-list" style="margin-top: 2rem;">
+        {% for tpl in templates %}
+        <div class="item-card">
+            <div class="item-card-content">
+                <h3>{{ tpl.template_name }}</h3>
+                <p style="color: #6c757d;">Файл: {{ tpl.original_filename }}</p>
+            </div>
+            <div class="item-card-actions">
+                <a href="{{ url_for('templates.edit', template_id=tpl.id) }}" class="btn btn-secondary btn-sm">Редактировать</a>
+                <form action="{{ url_for('templates.delete', template_id=tpl.id) }}" method="POST" onsubmit="return confirm('Вы уверены, что хотите удалить этот шаблон? Это действие нельзя отменить.');">
+                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="error-container" style="margin-top: 2rem; text-align: center;">
+        <h3>У вас пока нет шаблонов</h3>
+        <p>Нажмите "Создать новый шаблон", чтобы добавить свой первый!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

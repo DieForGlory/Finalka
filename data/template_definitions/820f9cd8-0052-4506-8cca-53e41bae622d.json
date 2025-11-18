@@ -1,0 +1,49 @@
+{
+    "template_name": "OOH: Russ (APR-Market)",
+    "excel_file": "820f9cd8-0052-4506-8cca-53e41bae622d.xlsx",
+    "original_filename": "PPL_OOH___.xlsx",
+    "header_start_cell": "B11",
+    "rules": [
+        {
+            "source_cell": "B11",
+            "template_col": "B"
+        },
+        {
+            "source_cell": "C11",
+            "template_col": "E"
+        },
+        {
+            "source_cell": "D11",
+            "template_col": "F"
+        },
+        {
+            "source_cell": "E11",
+            "template_col": "G"
+        },
+        {
+            "source_cell": "H11",
+            "template_col": "C"
+        },
+        {
+            "source_cell": "J11",
+            "template_col": "H"
+        },
+        {
+            "source_cell": "N11",
+            "template_col": "M"
+        },
+        {
+            "source_cell": "O11",
+            "template_col": "N"
+        },
+        {
+            "source_cell": "P11",
+            "template_col": "O"
+        },
+        {
+            "source_cell": "Q11",
+            "template_col": "P"
+        }
+    ],
+    "name": "OOH: Russ (APR-Market)"
+}

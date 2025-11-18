@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование шаблона{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Редактируем шаблон: "{{ template.template_name }}"</h1>
+    <p>Здесь вы можете обновить любые настройки вашего шаблона.</p>
+
+    <script>
+        // Сохраняем в глобальную (для этого шаблона) переменную
+        // имена листов, чтобы JS мог их использовать при рендеринге
+        // существующих правил.
+        var templateSheetSettings = [
+            {% for setting in template.sheet_settings %}
+                "{{ setting.sheet_name | e }}",
+            {% endfor %}
+        ];
+    </script>
+
+
+    <form action="{{ url_for('templates.edit', template_id=template_id) }}" method="POST" enctype="multipart/form-data" style="margin-top: 2rem;">
+
+        <fieldset>
+            <legend><span class="legend-icon">1</span>Основная информация и настройки</legend>
+
+            <div class="form-group">
+                <label for="template_name">Название шаблона</label>
+                <input type="text" id="template_name" name="template_name" value="{{ template.template_name }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="header_start_cell">Ячейка с первым заголовком (в файле-шаблоне)</label>
+                <input type="text" id="header_start_cell" name="header_start_cell" value="{{ template.header_start_cell }}" required>
+            </div>
+
+
+            <div class="form-group">
+                <label>Текущий файл шаблона:
+                    <a href="{{ url_for('templates.download', template_id=template_id) }}">{{ template.original_filename }}</a>
+                </label>
+                <label for="excel_file" style="margin-top: 0.5rem;">Загрузить новый файл (необязательно, заменит старый)</label>
+                <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xlsm">
+            </div>
+
+            <hr style="margin: 2rem 0;">
+
+            <div class="form-group">
+                <label for="post_function">Финальная обработка</label>
+                <select id="post_function" name="post_function">
+                    <option value="none" {% if template.post_function == 'none' or not template.post_function %}selected{% endif %}>Без обработки</option>
+                    <option value="geocode" {% if template.post_function == 'geocode' %}selected{% endif %}>Найти координаты по адресу</option>
+                    </select>
+            </div>
+
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="visible_rows_only" name="visible_rows_only" value="true" {% if template.visible_rows_only %}checked{% endif %}>
+                <label for="visible_rows_only">Обрабатывать только видимые (не скрытые фильтром) строки</label>
+            </div>
+
+            {% if current_user.role == 'admin' %}
+            <hr style="margin: 2rem 0;">
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="is_public" name="is_public" value="on" {% if template.owner_id == None %}checked{% endif %}>
+                <label for="is_public">(Только для Админа) Сделать этот шаблон ПУБЛИЧНЫМ (доступным для всех)</label>
+            </div>
+            {% endif %}
+        </fieldset>
+
+        <fieldset>
+            <legend><span class="legend-icon">2</span>Настройки листов источника</legend>
+            <p>Для каждого листа, который вы используете в правилах ниже, укажите, где на нем начинаются заголовки.</p>
+            <div id="sheet-settings-container">
+                {% if template.sheet_settings %}
+                    {% for setting in template.sheet_settings %}
+                    <div class="rule-row">
+                        <div class="rule-input-group">
+                            <label>Имя листа в источнике</label>
+                            <input type="text" name="setting_sheet_name" placeholder="Лист1" value="{{ setting.sheet_name }}" required>
+                        </div>
+                        <div class="rule-input-group">
+                            <label>Начальная ячейка заголовков</label>
+                            <input type="text" name="setting_start_cell" placeholder="A5" value="{{ setting.start_cell }}" required>
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm remove-rule-btn" style="align-self: center; margin-top: 1rem;">Удалить</button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <button type="button" id="add-sheet-setting" class="btn btn-secondary" style="margin-top: 1rem;">+ Добавить настройку для листа</button>
+        </fieldset>
+
+        <fieldset>
+            <legend><span class="legend-icon">3</span>Сопоставление ячеек (Ячейка → Ячейка)</legend>
+            <p>Точечное копирование данных из одной ячейки в другую. (н-р, `A1` -> `B5`)</p>
+            <div id="cell-mappings-container">
+                {% if template.cell_mappings %}
+                    {% for mapping in template.cell_mappings %}
+                    <div class="rule-row">
+                        <div class="rule-input-group">
+                            <label>Из листа</label>
+                            <select name="source_sheet_cell" required>
+                                {% for sheet_name in template.sheet_settings | map(attribute='sheet_name') %}
+                                <option value="{{ sheet_name }}" {% if mapping.source_sheet == sheet_name %}selected{% endif %}>{{ sheet_name }}</option>
+                                {% endfor %}
+                                {% if mapping.source_sheet not in template.sheet_settings | map(attribute='sheet_name') %}
+                                <option value="{{ mapping.source_sheet }}" selected disabled>{{ mapping.source_sheet }} (удален из Шага 2)</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div class="rule-input-group"><label>Из ячейки</label><input type="text" name="source_cell_cell" placeholder="A1" value="{{ mapping.source_cell }}" required></div>
+                        <div class="rule-arrow">→</div>
+                        <div class="rule-input-group"><label>В ячейку</label><input type="text" name="dest_cell_cell" placeholder="B5" value="{{ mapping.dest_cell }}" required></div>
+
+                        <div class="rule-input-group rule-name-group">
+                            <label>Название (необяз.)</label><input type="text" name="cell_mapping_name" value="{{ mapping.name or '' }}" placeholder="Описание правила">
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm remove-rule-btn" style="align-self: center; margin-top: 1rem;">Удалить</button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <button type="button" id="add-cell-mapping" class="btn btn-secondary" style="margin-top: 1rem;">+ Добавить сопоставление ячейки</button>
+        </fieldset>
+
+        <fieldset>
+            <legend><span class="legend-icon">4</span>Заполнение столбца из ячейки (Ячейка → Столбец)</legend>
+            <p>Взять значение из ОДНОЙ ячейки (н-р, A2) и вставить его во ВЕСЬ столбец C.</p>
+            <div id="source-cell-fill-rules-container">
+                {% if template.source_cell_fill_rules %}
+                    {% for rule in template.source_cell_fill_rules %}
+                    <div class="rule-row">
+                        <div class="rule-input-group">
+                            <label>Из листа источника</label>
+                             <select name="source_sheet_fill" required>
+                                {% for sheet_name in template.sheet_settings | map(attribute='sheet_name') %}
+                                <option value="{{ sheet_name }}" {% if rule.source_sheet == sheet_name %}selected{% endif %}>{{ sheet_name }}</option>
+                                {% endfor %}
+                                {% if rule.source_sheet not in template.sheet_settings | map(attribute='sheet_name') %}
+                                <option value="{{ rule.source_sheet }}" selected disabled>{{ rule.source_sheet }} (удален из Шага 2)</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div class="rule-input-group"><label>Из ячейки источника</label><input type="text" name="source_cell_fill" placeholder="A2" value="{{ rule.source_cell }}" required></div>
+                        <div class="rule-arrow">→</div>
+                        <div class="rule-input-group"><label>На лист шаблона</label><input type="text" name="target_sheet_fill" placeholder="Лист1" value="{{ rule.target_sheet or 'Лист1' }}" required></div>
+                        <div class="rule-input-group"><label>В колонку шаблона</label><input type="text" name="target_col_fill" placeholder="C" value="{{ rule.target_col }}" required></div>
+
+                        <div class="rule-input-group rule-name-group">
+                            <label>Название (необяз.)</label><input type="text" name="source_cell_fill_rule_name" value="{{ rule.name or '' }}" placeholder="Описание правила">
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm remove-rule-btn" style="align-self: center; margin-top: 1rem;">Удалить</button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <button type="button" id="add-source-fill-rule" class="btn btn-secondary" style="margin-top: 1rem;">+ Добавить правило заполнения</button>
+        </fieldset>
+
+        <fieldset>
+            <legend><span class="legend-icon">5</span>Сопоставление столбцов (Колонка → Колонка)</legend>
+            <p>Основное правило для копирования данных по строкам из одного столбца в другой. (н-р, `A` -> `B`)</p>
+            <div id="manual-rules-container">
+                {% if template.rules %}
+                    {% for rule in template.rules %}
+                    <div class="rule-row">
+                        <div class="rule-input-group">
+                             <label>Из листа</label>
+                             <select name="source_sheet" required>
+                                {% for sheet_name in template.sheet_settings | map(attribute='sheet_name') %}
+                                <option value="{{ sheet_name }}" {% if rule.source_sheet == sheet_name %}selected{% endif %}>{{ sheet_name }}</option>
+                                {% endfor %}
+                                {% if rule.source_sheet not in template.sheet_settings | map(attribute='sheet_name') %}
+                                <option value="{{ rule.source_sheet }}" selected disabled>{{ rule.source_sheet }} (удален из Шага 2)</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div class="rule-input-group"><label>Из колонки</label><input type="text" name="source_col" placeholder="A" value="{{ rule.source_col }}" required></div>
+                        <div class="rule-arrow">→</div>
+                        <div class="rule-input-group"><label>В колонку</label><input type="text" name="template_col" placeholder="B" value="{{ rule.template_col }}" required></div>
+
+                        <div class="rule-input-group rule-name-group">
+                            <label>Название (необяз.)</label><input type="text" name="manual_rule_name" value="{{ rule.name or '' }}" placeholder="Описание правила">
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm remove-rule-btn" style="align-self: center; margin-top: 1rem;">Удалить</button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <button type="button" id="add-manual-rule" class="btn btn-secondary" style="margin-top: 1rem;">+ Добавить правило</button>
+        </fieldset>
+
+        <fieldset>
+            <legend><span class="legend-icon">6</span>Продвинутые настройки столбцов</legend>
+
+            <p style="margin-top: 1rem; margin-bottom: 1rem;">Здесь можно заполнить колонку одним и тем же значением для всех строк на выбранном листе шаблона.</p>
+            <div id="static-value-rules-container">
+                {% if template.static_value_rules %}
+                    {% for rule in template.static_value_rules %}
+                    <div class="rule-row">
+                        <div class="rule-input-group"><label>На лист шаблона</label><input type="text" name="target_sheet_static" placeholder="Лист1" value="{{ rule.target_sheet or 'Лист1' }}" required></div>
+                        <div class="rule-input-group" style="flex-grow: 0.5;"><label>В колонку</label><input type="text" name="target_col_static" placeholder="D" value="{{ rule.target_col }}" required></div>
+                        <div class="rule-arrow">=</div>
+                        <div class="rule-input-group" style="flex-grow: 2;"><label>Вставить значение</label><input type="text" name="static_value" placeholder="Готово" value="{{ rule.value }}" required></div>
+
+                        <div class="rule-input-group rule-name-group">
+                            <label>Название (необяз.)</label><input type="text" name="static_value_rule_name" value="{{ rule.name or '' }}" placeholder="Описание правила">
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm remove-rule-btn" style="align-self: center; margin-top: 1rem;">Удалить</button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                </div>
+            <button type="button" id="add-static-value-rule" class="btn btn-secondary" style="margin-top: 1rem;">+ Добавить статичное значение</button>
+
+            <hr style="margin: 2rem 0;">
+
+            <p style="margin-bottom: 1rem;">Здесь можно задать вычисляемые значения. Формула возьмет данные с указанного листа-источника, вычислит результат и вставит его в файл-шаблон. Используйте <strong>{row}</strong> для подстановки номера строки.</p>
+            <div id="formula-rules-container">
+                {% if template.formula_rules %}
+                    {% for rule in template.formula_rules %}
+                    <div class="rule-row">
+                        <div class="rule-input-group">
+                             <label>Из листа источника</label>
+                             <select name="source_sheet_formula" required>
+                                {% for sheet_name in template.sheet_settings | map(attribute='sheet_name') %}
+                                <option value="{{ sheet_name }}" {% if rule.source_sheet == sheet_name %}selected{% endif %}>{{ sheet_name }}</option>
+                                {% endfor %}
+                                {% if rule.source_sheet not in template.sheet_settings | map(attribute='sheet_name') %}
+                                <option value="{{ rule.source_sheet }}" selected disabled>{{ rule.source_sheet }} (удален из Шага 2)</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div class="rule-arrow">→</div>
+                        <div class="rule-input-group"><label>На лист шаблона</label><input type="text" name="target_sheet_formula" placeholder="Лист1" value="{{ rule.target_sheet or 'Лист1' }}" required></div>
+                        <div class="rule-input-group" style="flex-grow: 0.5;"><label>В колонку</label><input type="text" name="target_col_formula" placeholder="C" value="{{ rule.target_col }}" required></div>
+                        <div class="rule-arrow">=</div>
+                        <div class="rule-input-group" style="flex-grow: 2;"><label>Вычислить по формуле</label><input type="text" name="formula_string" placeholder="=A{row}*1.2" value="{{ rule.formula }}" required></div>
+
+                        <div class="rule-input-group rule-name-group">
+                            <label>Название (необяз.)</label><input type="text" name="formula_rule_name" value="{{ rule.name or '' }}" placeholder="Описание правила">
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm remove-rule-btn" style="align-self: center; margin-top: 1rem;">Удалить</button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <button type="button" id="add-formula-rule" class="btn btn-secondary" style="margin-top: 1rem;">+ Добавить правило формулы</button>
+        </fieldset>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; margin-top: 2rem;">Обновить шаблон</button>
+    </form>
+</div>
+{% endblock %}

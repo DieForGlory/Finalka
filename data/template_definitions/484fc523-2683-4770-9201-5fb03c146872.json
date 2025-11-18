@@ -1,0 +1,12 @@
+{
+    "template_name": "Тествоый_шаблон_Nikita",
+    "excel_file": "484fc523-2683-4770-9201-5fb03c146872.xlsm",
+    "original_filename": "PPL_шаблон_Г_2.xlsm",
+    "header_start_cell": "A15",
+    "rules": [
+        {
+            "source_cell": "B21",
+            "template_col": "F"
+        }
+    ]
+}

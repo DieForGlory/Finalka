@@ -1,0 +1,34 @@
+# Атрибут 'version' удален, так как он устарел
+services:
+  # 1. Сервис вашего Flask-приложения
+  web:
+    build: .  # Собрать образ из Dockerfile в текущей папке
+    ports:
+      - "5000:5000" # Проброс порта (хост:контейнер)
+    environment:
+      # Сообщаем Flask, где найти Redis.
+      # 'redis' - это имя сервиса Redis, определенного ниже.
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      # Монтируем папку 'data' из проекта внутрь контейнера
+      # в /app/data (где /app - это WORKDIR из Dockerfile).
+      # Это необходимо для сохранения 'app.db' и 'processed_files'.
+      - ./data:/app/data
+    command: gunicorn --bind 0.0.0.0:5000 --workers 4 "run:app"
+    depends_on:
+      - redis # Указываем, что сервис 'web' зависит от 'redis'
+
+  # 2. Сервис Redis
+  redis:
+    image: "redis:7-alpine" # Используем официальный легкий образ
+    ports:
+      # (Опционально) проброс порта для отладки с localhost
+      - "6379:6379"
+    volumes:
+      # (Опционально, но рекомендуется)
+      # Сохраняем данные Redis между перезапусками
+      - redis-data:/data
+
+# Определяем именованный том для Redis
+volumes:
+  redis-data:

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Просто Парсер{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">Просто Парсер</div>
+        <nav class="nav-links">
+
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('main.index') }}">Парсер</a>
+                <a href="{{ url_for('templates.list') }}">Шаблоны</a>
+                <a href="{{ url_for('dictionaries.dictionary_ui') }}">Словарь Заголовков</a>
+                <a href="{{ url_for('dictionaries.value_dictionary_ui') }}">Словарь Значений</a>
+
+                {% if current_user.role == 'admin' %}
+                    <a href="{{ url_for('admin.users') }}" style="color: var(--success-color); font-weight: 700; margin-left: 1.5rem;">Пользователи</a>
+                    <a href="{{ url_for('admin.reports') }}" style="color: var(--success-color); font-weight: 700; margin-left: 1.5rem;">Отчетность</a>
+                    <a href="{{ url_for('admin.geocoding_ui') }}" style="color: var(--success-color); font-weight: 700; margin-left: 1.5rem;">Геокодинг</a>
+                {% endif %}
+
+                <span style="margin-left: 1.5rem; color: #6c757d;">Привет, {{ current_user.username }}!</span>
+                <a href="{{ url_for('auth.logout') }}" style="margin-left: 0.5rem;">Выйти</a>
+
+            {% else %}
+                <a href="{{ url_for('auth.login') }}">Войти</a>
+            {% endif %}
+
+        </nav>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flash-messages container">
+            {% for category, message in messages %}
+              <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+
+    <script src="{{ url_for('static', filename='js/script.js', v='1.2') }}"></script>
+    </body>
+</html>

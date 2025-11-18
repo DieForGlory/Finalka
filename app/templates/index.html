@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Просто Парсер{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Добро пожаловать в Просто Парсер!</h1>
+    <p>Выберите исходный файл и шаблон для его обработки.</p>
+
+    <form id="process-form" action="{{ url_for('main.process_files') }}" method="POST" enctype="multipart/form-data">
+
+        <div id="error-messages" class="error-container" style="display:none;"></div>
+
+        <fieldset>
+            <legend><span class="legend-icon">1</span>Ваш исходный файл</legend>
+            <div class="form-group">
+                <label for="source_file">Выберите файл с данными, которые нужно обработать (.xls, .xlsx, .xlsm)</label>
+                <input type="file" id="source_file" name="source_file" required accept=".xls, .xlsx, .xlsm">
+            </div>
+            </fieldset>
+
+        <fieldset>
+            <legend><span class="legend-icon">2</span>Шаблон для обработки</legend>
+            <div class="form-group">
+                <label for="saved_template">Выберите готовый шаблон (рекомендуется)</label>
+                <select id="saved_template" name="saved_template">
+                    <option value="">-- Ручная настройка ниже --</option>
+                    {% for template in templates %}
+                        <option value="{{ template.id }}">{{ template.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </fieldset>
+
+        <div id="new-template-fields">
+            <fieldset>
+                <legend><span class="legend-icon">3</span>Ручная настройка</legend>
+                 <div class="form-group">
+                    <label for="template_file">Загрузите файл-шаблон (.xls, .xlsx, .xlsm)</label>
+                    <input type="file" id="template_file" name="template_file" accept=".xls, .xlsx, .xlsm">
+                </div>
+                 <div class="form-group">
+                    <label for="template_range_start">Укажите ячейку, с которой начинаются заголовки в файле-шаблоне</label>
+                    <input type="text" id="template_range_start" name="template_range_start" placeholder="Например, A1">
+                </div>
+                </fieldset>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.2rem; margin-top: 2rem;">Начать магию!</button>
+    </form>
+
+    <div id="progress-container" style="display:none;">
+        <h2>Процесс пошел!</h2>
+        <p id="status-text">Готовлюсь к работе...</p>
+        <div class="progress-bar-background">
+            <div id="progress-bar" class="progress-bar-foreground"></div>
+        </div>
+        <a href="#" id="download-link" class="btn btn-success" style="display:none; margin-top:1rem;">Скачать результат</a>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,239 @@
+{
+    "template_name": "ФН_Russ_RW_стандарт",
+    "excel_file": "b9962e09-5714-4a6e-8403-5ad68f92811c.xlsm",
+    "original_filename": "PPL_шаблон_Г_2.xlsm",
+    "header_start_cell": "A15",
+    "rules": [
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "B21",
+            "template_col": "F"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "C21",
+            "template_col": "U"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "K21",
+            "template_col": "AE"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "M21",
+            "template_col": "AF"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "O21",
+            "template_col": "W"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "R21",
+            "template_col": "T"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "T21",
+            "template_col": "AR"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "U21",
+            "template_col": "AG"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "V21",
+            "template_col": "AH"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "S21",
+            "template_col": "AS"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "AU21",
+            "template_col": "CP"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "AY21",
+            "template_col": "CO"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "AV21",
+            "template_col": "M"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "AF21",
+            "template_col": "DI"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "AQ21",
+            "template_col": "V"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "G21",
+            "template_col": "AC"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "W21",
+            "template_col": "AJ"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "E21",
+            "template_col": "AQ"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "BA21",
+            "template_col": "K"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "source_cell": "BB21",
+            "template_col": "J"
+        }
+    ],
+    "cell_mappings": [],
+    "formula_rules": [
+        {
+            "source_sheet": "APR-Market",
+            "target_sheet": "МП",
+            "target_col": "EH",
+            "formula": "=AP{row}/1.2"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "target_sheet": "МП",
+            "target_col": "EK",
+            "formula": "=AN{row}/1.2"
+        },
+        {
+            "source_sheet": "APR-Market",
+            "target_sheet": "МП",
+            "target_col": "AS",
+            "formula": "=S{row}*1000"
+        }
+    ],
+    "static_value_rules": [
+        {
+            "target_sheet": "МП",
+            "target_col": "AD",
+            "value": "нет"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "AI",
+            "value": "1"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "EP",
+            "value": "20%"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "EQ",
+            "value": "ОСН"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "CM",
+            "value": "20%"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "CN",
+            "value": "ОСН"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "ES",
+            "value": "RussOutdoor"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "EU",
+            "value": "собственник"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "L",
+            "value": "Ж/Д вокзал"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "N",
+            "value": "n/a"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "O",
+            "value": "n/a"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "I",
+            "value": "n/a"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "Z",
+            "value": "1"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "AA",
+            "value": "1"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "Y",
+            "value": "n/a"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "AK",
+            "value": "24"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "S",
+            "value": "1"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "AU",
+            "value": "n/a"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "CV",
+            "value": "свободная продажа"
+        },
+        {
+            "target_sheet": "МП",
+            "target_col": "CQ",
+            "value": "в срок не позднее 60 календарных дней до старта рк"
+        }
+    ],
+    "post_function": "none",
+    "visible_rows_only": false,
+    "sheet_settings": [
+        {
+            "sheet_name": "APR-Market",
+            "start_cell": "A21"
+        }
+    ]
+}

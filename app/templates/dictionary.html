@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Словарь Заголовков{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Словарь Заголовков</h1>
+    <p>Научите систему понимать синонимы. Например, если вы добавите "Имя клиента" как основное имя, а "ФИО@1!Покупатель@1!Заказчик" как синонимы, система будет знать, что это одно и то же.</p>
+
+    <div class="item-card" style="margin-top: 2rem;">
+        <form id="dictionary-form" action="{{ url_for('dictionaries.add_to_dictionary') }}" method="POST" style="width:100%">
+            <h3>Добавить или обновить запись</h3>
+            <div class="form-group">
+                <label for="canonical_name">Основное, "правильное" название заголовка</label>
+                <input type="text" id="canonical_name" name="canonical_name" placeholder="Например, 'Имя клиента'" required>
+            </div>
+            <div class="form-group">
+                <label for="synonyms">Синонимы (через разделитель @1!)</label>
+                <input type="text" id="synonyms" name="synonyms" placeholder="Например, ФИО@1!Покупатель@1!Заказчик">
+            </div>
+            <button type="submit" class="btn btn-primary">Сохранить запись</button>
+        </form>
+    </div>
+
+    <h2 style="margin-top: 2rem;">Существующие записи</h2>
+    {% if dictionary %}
+        <div class="item-list">
+        {% for canonical, synonyms in dictionary.items() %}
+            <div class="item-card">
+                <div class="item-card-content">
+                    <h3>{{ canonical }}</h3>
+                    <p style="color: #6c757d;">Синонимы: {{ synonyms|join('@1!') }}</p>
+                </div>
+                <div class="item-card-actions">
+                    <button type="button" class="btn btn-secondary btn-sm edit-btn" data-canonical="{{ canonical }}" data-synonyms="{{ synonyms|join('@1!') }}">Редактировать</button>
+                    <form action="{{ url_for('dictionaries.delete_from_dictionary') }}" method="POST" onsubmit="return confirm('Удалить эту запись?');" style="display: inline;">
+                        <input type="hidden" name="canonical_name" value="{{ canonical }}">
+                        <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p>Ваш словарь пока пуст. Добавьте первую запись!</p>
+    {% endif %}
+</div>
+{% endblock %}
